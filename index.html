@@ -2,130 +2,26 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>ext — Jeu narratif génératif</title>
+  <title>Test INT</title>
   <style>
-    body {
-      background-color: black;
-      color: white;
-      font-family: 'Courier New', monospace;
-      padding: 40px;
-      text-align: center;
-    }
-    #title {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-    .choice, .lang-btn, #replayBtn {
-      display: block;
-      margin: 10px auto;
-      padding: 10px 20px;
-      background-color: #222;
-      color: white;
-      border: 1px solid white;
-      cursor: pointer;
-      font-weight: bold;
-      width: fit-content;
-    }
-    #story {
-      white-space: pre-wrap;
-      margin: 30px 0;
-      text-align: left;
-    }
+    body { background: black; color: white; font-family: monospace; text-align: center; padding: 40px; }
+    .btn { margin: 10px; padding: 10px 20px; border: 1px solid white; cursor: pointer; }
   </style>
 </head>
 <body>
-
-  <div id="title">INT</div>
-  <div id="language-selection">
-    <div class="lang-btn" onclick="startGame('fr')">Français</div>
-    <div class="lang-btn" onclick="startGame('en')">English</div>
+  <h1>INT</h1>
+  <div id="lang">
+    <div class="btn" onclick="start('fr')">Français</div>
+    <div class="btn" onclick="start('en')">English</div>
   </div>
-
-  <div id="story" style="display:none;"></div>
-  <div id="choices"></div>
-  <div id="replayBtn" style="display:none;" onclick="restartGame()">🔁 Rejouer</div>
+  <div id="game" style="display:none;"></div>
 
   <script>
-    let gameState = {};
-    let currentLang = 'fr';
-
-    const texts = {
-      fr: {
-        lieux: ["Secteur 12", "Nœud 88", "Terminal oublié", "Zone d’écho", "Fragment 3C"],
-        événements: ["une distorsion de mémoire", "un signal parasite", "une boucle temporelle", "une intrusion mentale", "un effacement partiel"],
-        menaces: ["un collecteur de données", "une IA corrompue", "un agent du Réseau", "un spectre de protocole", "un drone de purge"],
-        endings: {
-          libre: "Tu as restauré assez de fragments. Tu redeviens ext-9, mais tu n’es plus le même. Tu es libre.",
-          ombre: "Tu as fui assez longtemps. Le Réseau t’oublie. Tu deviens une ombre parmi les ombres.",
-          suspendu: "Tu as observé, tu as attendu. Mais le monde ne t’a pas choisi. Tu restes un fragment suspendu."
-        },
-        choices: ["1. Fuir", "2. Interagir avec le signal", "3. Te cacher et observer"]
-      },
-      en: {
-        lieux: ["Sector 12", "Node 88", "Forgotten Terminal", "Echo Zone", "Fragment 3C"],
-        événements: ["a memory distortion", "a parasite signal", "a time loop", "a mental intrusion", "a partial wipe"],
-        menaces: ["a data collector", "a corrupted AI", "a Network agent", "a protocol ghost", "a purge drone"],
-        endings: {
-          libre: "You've restored enough fragments. You become ext-9 again, but you're no longer the same. You are free.",
-          ombre: "You've fled long enough. The Network forgets you. You become a shadow among shadows.",
-          suspendu: "You watched and waited. But the world did not choose you. You remain a suspended fragment."
-        },
-        choices: ["1. Run", "2. Interact with the signal", "3. Hide and observe"]
-      }
-    };
-
-    function startGame(lang) {
-      currentLang = lang;
-      gameState = { sceneCount: 0, fragmentLevel: 0, stealth: 0, trust: 0 };
-      document.getElementById("title").style.display = "none";
-      document.getElementById("language-selection").style.display = "none";
-      document.getElementById("story").style.display = "block";
-      document.getElementById("choices").style.display = "block";
-      renderScene();
+    function start(lang) {
+      document.getElementById("lang").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("game").innerText = lang === 'fr' ? "Bienvenue dans le jeu INT." : "Welcome to INT.";
     }
-
-    function random(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function generateScene(state) {
-      const t = texts[currentLang];
-      const lieu = random(t.lieux);
-      const événement = random(t.événements);
-      const menace = random(t.menaces);
-
-      const narration = `Scène ${state.sceneCount + 1} — ${lieu}
-
-Tu es dans ${lieu}. Tu subis ${événement}. ${menace} approche.  
-Ton système interne tente de se restaurer.  
-Mais tu ignores encore ce que tu étais avant la fragmentation.`;
-
-      const choices = [
-        { text: t.choices[0], effect: () => { state.stealth++; state.sceneCount++; } },
-        { text: t.choices[1], effect: () => { state.fragmentLevel++; state.sceneCount++; } },
-        { text: t.choices[2], effect: () => { state.trust++; state.sceneCount++; } }
-      ];
-
-      return { text: narration, choices };
-    }
-
-    function renderScene() {
-      if (gameState.sceneCount >= 10 || gameState.fragmentLevel >= 5) {
-        endGame();
-        return;
-      }
-
-      const scene = generateScene(gameState);
-      document.getElementById("story").innerText = scene.text;
-      const choicesDiv = document.getElementById("choices");
-      choicesDiv.innerHTML = "";
-
-      scene.choices.forEach(choice => {
-        const btn = document.createElement("div");
-        btn.className = "choice";
-        btn.innerText = choice.text;
-        btn.onclick = () => {
-          choice.effect();
-          renderScene();
-        };
-        choicesDiv.appendChild(btn
+  </script>
+</body>
+</html>
