@@ -2,55 +2,25 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>ext — Jeu narratif génératif</title>
+  <title>Test INT</title>
   <style>
     body {
-      background-color: black;
+      background: black;
       color: white;
-      font-family: 'Courier New', monospace;
-      padding: 40px;
+      font-family: monospace;
       text-align: center;
+      padding: 40px;
     }
-    #title {
-      font-size: 48px;
-      margin-bottom: 20px;
-    }
-    .choice, .lang-btn, #replayBtn {
-      display: block;
-      margin: 10px auto;
+    .btn {
+      margin: 10px;
       padding: 10px 20px;
-      background-color: #222;
-      color: white;
       border: 1px solid white;
       cursor: pointer;
-      font-weight: bold;
-      width: fit-content;
-    }
-    #story {
-      white-space: pre-wrap;
-      margin: 30px 0;
-      text-align: left;
     }
   </style>
 </head>
 <body>
-
-  <div id="title">INT</div>
-  <div id="language-selection">
-    <div class="lang-btn" onclick="startGame('fr')">Français</div>
-    <div class="lang-btn" onclick="startGame('en')">English</div>
-  </div>
-
-  <div id="story" style="display:none;"></div>
-  <div id="choices" style="display:none;"></div>
-  <div id="replayBtn" style="display:none;" onclick="restartGame()">🔁 Rejouer</div>
-
-  <script>
-    let gameState = {};
-    let currentLang = 'fr';
-
-    const texts = {
-      fr: {
-        lieux: ["Secteur 12", "Nœud 88", "Terminal oublié", "Zone d’écho", "Fragment 3C"],
-        événements: ["une distorsion de mémoire", "un signal parasite", "une boucle temporelle", "une intrusion mentale", "un effacement partiel"],
-        menaces:
+  <h1>INT</h1>
+  <div id="lang">
+    <div class="btn" onclick="start('fr')">Français</div>
+   
