@@ -1,40 +1,14 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Test INT</title>
-  <style>
-    body {
-      background: black;
-      color: white;
-      font-family: monospace;
-      text-align: center;
-      padding: 40px;
-    }
-    .btn {
-      margin: 10px;
-      padding: 10px 20px;
-      border: 1px solid white;
-      cursor: pointer;
-    }
-  </style>
+  <title>Test JavaScript</title>
 </head>
 <body>
-  <h1>INT</h1>
-  <div id="lang">
-    <div class="btn" onclick="start('fr')">Français</div>
-    <div class="btn" onclick="start('en')">English</div>
-  </div>
-  <div id="game" style="display:none;"></div>
-
-  <script>
-    function start(lang) {
-      document.getElementById("lang").style.display = "none";
-      document.getElementById("game").style.display = "block";
-      document.getElementById("game").innerText = lang === 'fr'
-        ? "Bienvenue dans le jeu INT. Le clic fonctionne ✅"
-        : "Welcome to INT. Click is working ✅";
-    }
-  </script>
+  <h1>Test JavaScript</h1>
+  <button onclick="document.getElementById('result').innerText = '✅ JavaScript fonctionne !'">
+    Clique ici
+  </button>
+  <p id="result"></p>
 </body>
 </html>
