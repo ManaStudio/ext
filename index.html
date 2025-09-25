@@ -75,12 +75,14 @@
     };
 
     function startGame(lang) {
-      currentLang = lang;
-      gameState = { sceneCount: 0, fragmentLevel: 0, stealth: 0, trust: 0 };
-      document.getElementById("title").style.display = "none";
-      document.getElementById("language-selection").style.display = "none";
-      document.getElementById("story").style.display = "block";
-      renderScene();
+  currentLang = lang;
+  gameState = { sceneCount: 0, fragmentLevel: 0, stealth: 0, trust: 0 };
+  document.getElementById("title").style.display = "none";
+  document.getElementById("language-selection").style.display = "none";
+  document.getElementById("story").style.display = "block";
+  document.getElementById("choices").style.display = "block"; // ← AJOUTÉ
+  renderScene(); // ← Cette ligne lance la première scène
+}
     }
 
     function random(arr) {
