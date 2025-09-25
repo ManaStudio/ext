@@ -23,4 +23,18 @@
   <h1>INT</h1>
   <div id="lang">
     <div class="btn" onclick="start('fr')">Français</div>
-   
+    <div class="btn" onclick="start('en')">English</div>
+  </div>
+  <div id="game" style="display:none;"></div>
+
+  <script>
+    function start(lang) {
+      document.getElementById("lang").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      document.getElementById("game").innerText = lang === 'fr'
+        ? "Bienvenue dans le jeu INT. Le clic fonctionne ✅"
+        : "Welcome to INT. Click is working ✅";
+    }
+  </script>
+</body>
+</html>
