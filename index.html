@@ -75,14 +75,13 @@
     };
 
     function startGame(lang) {
-  currentLang = lang;
-  gameState = { sceneCount: 0, fragmentLevel: 0, stealth: 0, trust: 0 };
-  document.getElementById("title").style.display = "none";
-  document.getElementById("language-selection").style.display = "none";
-  document.getElementById("story").style.display = "block";
-  document.getElementById("choices").style.display = "block"; // ← AJOUTÉ
-  renderScene(); // ← Cette ligne lance la première scène
-}
+      currentLang = lang;
+      gameState = { sceneCount: 0, fragmentLevel: 0, stealth: 0, trust: 0 };
+      document.getElementById("title").style.display = "none";
+      document.getElementById("language-selection").style.display = "none";
+      document.getElementById("story").style.display = "block";
+      document.getElementById("choices").style.display = "block";
+      renderScene();
     }
 
     function random(arr) {
@@ -117,4 +116,16 @@ Mais tu ignores encore ce que tu étais avant la fragmentation.`;
       }
 
       const scene = generateScene(gameState);
-      document.getElementById("story").inner
+      document.getElementById("story").innerText = scene.text;
+      const choicesDiv = document.getElementById("choices");
+      choicesDiv.innerHTML = "";
+
+      scene.choices.forEach(choice => {
+        const btn = document.createElement("div");
+        btn.className = "choice";
+        btn.innerText = choice.text;
+        btn.onclick = () => {
+          choice.effect();
+          renderScene();
+        };
+        choicesDiv.appendChild(btn
