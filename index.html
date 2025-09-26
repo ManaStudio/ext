@@ -1,39 +1,37 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>EXT - Jeu narratif</title>
-  <style>
-    body { font-family: sans-serif; background: #111; color: #eee; padding: 2em; }
-    button { margin-top: 1em; padding: 0.5em 1em; }
-    #story { margin-top: 2em; white-space: pre-wrap; }
-  </style>
-</head>
-<body>
-  <h1>EXT - Scène interactive</h1>
-  <p>Choisis une action :</p>
-  <button onclick="genererScene('Interagir avec le signal')">Interagir avec le signal</button>
-  <button onclick="genererScene('Fuir le secteur')">Fuir le secteur</button>
-  <button onclick="genererScene('Observer en silence')">Observer en silence</button>
+const express = require('express');
+const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
+const app = express();
+app.use(bodyParser.json());
 
-  <div id="story">La scène apparaîtra ici...</div>
+const HF_API_KEY = 'ta_clé_huggingface';
 
-  <script>
-    function genererScene(choix) {
-      fetch("https://ext-server.onrender.com/generer-scene", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ langue: "fr", choix })
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("story").innerText = data.texte;
-      })
-      .catch(err => {
-        document.getElementById("story").innerText = "Erreur de génération.";
-        console.error(err);
-      });
-    }
-  </script>
-</body>
-</html>
+app.post('/generer-scene', async (req, res) => {
+  const { langue, choix } = req.body;
+
+  const prompt = langue === 'fr'
+    ? `Génère une scène immersive pour un jeu narratif cyberpunk. Le joueur a choisi : "${choix}". La scène doit être courte (5 lignes), mystérieuse, et inclure un lieu, une menace et une ambiance mentale.`
+    : `Generate an immersive cyberpunk game scene. The player chose: "${choix}". The scene should be short (5 lines), mysterious, and include a location, a threat, and a mental atmosphere.`;
+
+  try {
+    const response = await fetch('https://api-inference.huggingface.co/models/openchat/openchat-3.5', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${HF_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ inputs: prompt })
+    });
+
+    const data = await response.json();
+    const texte = data.generated_text || data[0]?.generated_text || 'Erreur de génération.';
+    res.json({ texte });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erreur: 'Erreur serveur' });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Serveur lancé sur http://localhost:3000');
+});
