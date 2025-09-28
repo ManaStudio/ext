@@ -2,11 +2,44 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Scène interactive</title>
+  <title>Jeu narratif</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
+      padding: 20px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #444;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #666;
+    }
+    #style {
+      font-weight: bold;
+      color: #00ffcc;
+    }
+    pre {
+      background-color: #222;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <h1>Que veux-tu faire ?</h1>
+  <h1>Bienvenue dans l'aventure</h1>
 
+  <p id="intro">Chargement de l'univers...</p>
+
+  <h2>Que voulez-vous faire ?</h2>
   <button onclick="generer('Observer les environs')">Observer les environs</button>
   <button onclick="generer('Interagir avec le signal')">Interagir avec le signal</button>
   <button onclick="generer('Suivre la silhouette')">Suivre la silhouette</button>
@@ -16,13 +49,30 @@
   <pre id="scene">...</pre>
 
   <script>
-    async function generer(choix) {
+    const serveur = 'srv-d3bau0ggjchc73fd1it0'; // ← remplace par ton vrai lien Render
+
+    async function chargerIntro() {
       try {
-        const res = await fetch('https://ext-server-7hxa.onrender.com/generer-scene', {
+        const res = await fetch(`${serveur}/intro`);
+        const data = await res.json();
+        document.getElementById('intro').textContent = data.texte || 'Intro indisponible';
+      } catch (error) {
+        document.getElementById('intro').textContent = "Erreur de connexion au serveur.";
+        console.error(error);
+      }
+    }
+
+    async function generer(choix) {
+      document.getElementById('scene').textContent = "Chargement...";
+      document.getElementById('style').textContent = "...";
+
+      try {
+        const res = await fetch(`${serveur}/generer-scene`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ langue: 'fr', choix })
         });
+
         const data = await res.json();
         document.getElementById('style').textContent = data.style || 'inconnu';
         document.getElementById('scene').textContent = data.texte || 'Erreur de génération';
@@ -31,6 +81,8 @@
         console.error(error);
       }
     }
+
+    chargerIntro(); // ← appel automatique au chargement
   </script>
 </body>
 </html>
