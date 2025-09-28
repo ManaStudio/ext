@@ -1,49 +1,70 @@
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const fetch = require('node-fetch');
-const app = express();
-app.use(bodyParser.json());
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Générateur de scènes narratives</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    pre {
+      background-color: #2e2e2e;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Générateur de scènes narratives</h1>
+  <p>Entre une action du joueur :</p>
+  <input type="text" id="choix" placeholder="Ex : Interagir avec le signal">
+  <button onclick="genererScene()">Générer</button>
 
-const HF_API_KEY = process.env.HF_API_KEY;
+  <h2>Style : <span id="style">...</span></h2>
+  <h2>Scène :</h2>
+  <pre id="scene">...</pre>
 
-const styles = ['science-fiction', 'cyberpunk', 'médiéval', 'heroic fantasy', 'post-apocalyptique', 'steampunk', 'space opera'];
+  <script>
+    async function genererScene() {
+      const choix = document.getElementById('choix').value.trim();
+      if (!choix) {
+        alert("Merci d'entrer une action !");
+        return;
+      }
 
-function choisirStyle() {
-  const index = Math.floor(Math.random() * styles.length);
-  return styles[index];
-}
+      try {
+        const response = await fetch('https://ext-server-7hxa.onrender.com/generer-scene', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ langue: 'fr', choix })
+        });
 
-app.post('/generer-scene', async (req, res) => {
-  const { langue, choix } = req.body;
-  const style = choisirStyle();
-
-  const prompt = langue === 'fr'
-    ? `Style : ${style}. Génère une scène immersive pour un jeu narratif. Le joueur a choisi : "${choix}". La scène doit être courte (5 lignes), mystérieuse, et inclure un lieu, une menace et une ambiance mentale.`
-    : `Style: ${style}. Generate an immersive game scene. The player chose: "${choix}". The scene should be short (5 lines), mysterious, and include a location, a threat, and a mental atmosphere.`;
-
-  try {
-    const response = await fetch('https://api-inference.huggingface.co/models/openchat/openchat-3.5', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${HF_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ inputs: prompt })
-    });
-
-    const data = await response.json();
-    const texte = Array.isArray(data) && data[0]?.generated_text
-      ? data[0].generated_text
-      : data.generated_text || 'Erreur de génération.';
-
-    res.json({ style, texte });
-  } catch (err) {
-    console.error('Erreur Hugging Face:', err);
-    res.status(500).json({ erreur: 'Erreur serveur' });
-  }
-});
-
-app.listen(3000, () => {
-  console.log('✅ Serveur lancé sur http://localhost:3000');
-});
+        const data = await response.json();
+        document.getElementById('style').textContent = data.style || 'inconnu';
+        document.getElementById('scene').textContent = data.texte || 'Erreur de génération';
+      } catch (error) {
+        document.getElementById('scene').textContent = "Erreur de connexion au serveur.";
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
